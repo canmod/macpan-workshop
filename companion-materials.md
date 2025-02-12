@@ -141,7 +141,7 @@ operator](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/#pipes),
 ### Dependencies
 
 The `macpan2` package is designed to be used with two other standard
-packages, and so all of the code in these materials assumes that the
+packages <BMB>which two? you've listed three here. Why not just load the whole tidyverse, which will include these three and a couple of others that may be useful ...</code>  and so all of the code in these materials assumes that the
 following packages are loaded.
 
 ``` r
@@ -153,6 +153,7 @@ library(lubridate)
 
 This document was produced with the following R environment.
 
+<BMB>I'm not sure why you are using the `|> print()` idiom. I know JD prefers this for explicitness in code that's going to be batch-run, but it seems unnecessary and confusing in this context ... (I might suggest including this info at the *end* of the document, as a postscript, since most of this info will only be useful for troubleshooting. You could if you liked mandate minimum versions of R/packages (e.g. tidyverse version 2.0.0 and R version >= 4.4.0 ...)</BMB>
 ``` r
 sessionInfo() |> print()
 ```
@@ -191,11 +192,14 @@ sessionInfo() |> print()
 
 ## Exploration
 
+<BMB>Who is the audience here/who is this statement aimed at? If you want to be friendlier you could say "in this seection, you ..."</BMB>
 Participants will learn how to explore and modify models, and informally
 compare them with observed data.
 
-At the core of macpan2 are model specifications, which primarily define
+<BMB>do you want to be consistent about `macpan2` vs macpan2?</BMB>
+At the core of macpan2 are model specifications, which define
 the flows between compartments and set default values for parameters.
+<BMB>"primarily" seems overly cautious/distracting here</BMB>
 These specifications offer a clear and systematic way to describe the
 behavior of a system, starting with the foundational elements of
 compartmental models. While additional complexities, such as vital
@@ -216,13 +220,13 @@ they define flows and default parameter values. Hands-on exercises will
 guide you to experiment with these models, helping you uncover their
 structure and applications in a variety of public health contexts.
 
-To list available models in the macpan2 library, use the following
-command:
+To list available models in the macpan2 library:
 
 ``` r
 show_models()
 ```
 
+<BMB> Can this table be auto-generated?</BMB>
 | Directory                                                                                                                    | Title                    | Description                                                                                                     |
 |:-----------------------------------------------------------------------------------------------------------------------------|:-------------------------|:----------------------------------------------------------------------------------------------------------------|
 | [awareness](https://github.com/canmod/macpan2/tree/main/inst/starter_models/awareness)                                       | Awareness Models         | Behaviour modifications in response to death                                                                    |
@@ -240,6 +244,9 @@ show_models()
 | [sir_waning](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_waning)                                     | SIR with Waning Immunity | A basic SIR model with a flow from R back to S                                                                  |
 | [ww](https://github.com/canmod/macpan2/tree/main/inst/starter_models/ww)                                                     | Wastewater Model         | Macpan base with an additional wastewater component                                                             |
 
+<BMB>The "SIR with waning immunity" is more traditionally called "SIRS"</BMB>
+
+<BMB>Maybe this is obvious?</BMB>
 This function displays the available models, along with their
 directories, titles, and descriptions.
 
@@ -276,15 +283,13 @@ There are three parts to this specification.
 
 -   **Default values:** The default values that model quantities take
     before each simulation begins[^1]. In the `sir` example there are
-    two parameters, `beta` and `gamma`, the total population size, `N`,
+    two parameters (the transmission rate `beta` and removal rate `gamma`), the total population size, `N`,
     and the initial values of two state variables, `I` and `R`.
--   **Before the simulation loop:** Expressions that get evaluated by
-    `macpan2` before the dynamical simulation loop. In the `sir` example
-    the initial value of `S` is computed. Note that the specification
-    could have placed `S` in the defaults, but as we will see the choice
-    of whether to (1) place the initial value of a quantity in the
-    defaults or (2) compute it in `macpan2` before the simulation loop
-    begins will depend on a number of considerations.
+-   **Before the simulation loop:** Expressions that 
+    `macpan2` evaluates before the dynamical simulation loop. In the `sir` example
+    the initial value of `S` is computed. The specification
+    could also have placed `S` in the defaults: in this case we compute it before the simulation loop
+    instead in order to allow it to depend on other model quantities.
 -   **At every iteration of the simulation loop:** Expressions that get
     evaluated iteratively during the simulation loop. In the `sir`
     example there are two flows, which I discuss more throughout the
@@ -292,7 +297,7 @@ There are three parts to this specification.
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Model specification objects, like `sir` above, can be produced using several different functions. Above I produced such an object using `mp_tmb_library()`, which reads pre-existing specifications in from the library. If you were to go the [directory](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir) that defines this library model you would see [the script](https://github.com/canmod/macpan2/blob/main/inst/starter_models/sir/tmb.R) that actually produces the specification. This script uses the `mp_tmb_model_spec()` function to do so, and you can use this function directly yourself to produce your own model specifications. Later we will learn about other functions that take a model specification and return a modified version of this specification. This is useful when a model needs to be modified so that it can be compared with data (e.g., account for under-reporting, time-varying transmission rates in response to school closures). |
+| Model specification objects, like `sir` above, can be produced <BMB>try for active voice: "you can use several functions to produce"?</BMB> using several different functions. Above I produced such an object using `mp_tmb_library()`, which reads pre-existing specifications in from the library. If you were to go the [directory](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir) that defines this library model you would see [the script](https://github.com/canmod/macpan2/blob/main/inst/starter_models/sir/tmb.R) that actually produces the specification. This script uses the `mp_tmb_model_spec()` function to do so, and you can use this function directly yourself to produce your own model specifications. Later we will learn about other functions that take a model specification and return a modified version of this specification. This is useful when a model needs to be modified so that it can be compared with data (e.g., account for under-reporting, time-varying transmission rates in response to school closures). |
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
