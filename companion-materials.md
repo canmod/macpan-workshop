@@ -70,6 +70,8 @@ this)
 
 ### Syllabus
 
+<!-- comments denoted as <BMB> ... </BMB> -->
+
 Please read the
 [syllabus](https://canmod.github.io/macpan-workshop/syllabus) before
 participating in this workshop. The instructor will review this syllabus
@@ -77,8 +79,7 @@ with participants before the sessions start.
 
 The syllabus provides a roadmap for the workshop, guiding participants
 through the exploration-parameterization-inference-stratification
-strategy essential for compartmental modeling using the `macpan2`
-package. Each session is organized around these steps, offering a
+strategy essential for compartmental modeling. Each session is organized around these steps, offering a
 structured approach to model refinement. Participants will follow a
 practical example that demonstrates each phase of the strategy, with
 companion materials available for deeper exploration of related skills.
@@ -86,22 +87,20 @@ Each session contains exercises designed to reinforce key concepts and
 encourage participants to apply lessons to their own compartmental model
 diagrams. For those without a pre-existing model or whose models are not
 applicable, a detailed example model is provided to ensure a hands-on
-learning experience. By the end of the workshop, participants will have
-the skills to evaluate the suitability of compartmental modeling for
-public health problems, develop models using macpan2, navigate its
+learning experience <BMB>"to ensure a hands-on learning experience" feels jargony. Could delete?</BMB>. By the end of the workshop, participants will learn to evaluate the suitability of compartmental modeling for
+public health problems, develop models using `macpan2`, navigate its
 documentation to address challenges, and provide constructive feedback
 for improving the tool.
 
 ### Philosophy
 
-The goal of `macpan2` is *not* to implement cutting edge modelling and
-statistical techniques. Instead the goal is to implement well-understood
-techniques, optimized for use by epidemiologists who are tasked with
-answering real-world public health questions using data-calibrated
-compartmental models.
+The goal of `macpan2` is to implement well-understood
+techniques, optimized for use by epidemiological modelers  who are tasked with using data-calibrated compartmental models to answer real-world public health questions.
 
 ### Organization
 
+<BMB>I found some of the opinionated stuff here off-putting. Do you need to emphasize
+this so much?  Do we need this explanatory paragraph at all? (</BMB>
 Our effort to present standard tools in a convenient manner has led us
 to develop concepts that encapsulate how I believe modellers do (or
 should) think. By building and updating our software with these concepts
@@ -111,21 +110,20 @@ these concepts in special boxes.
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                        |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **User Feedback**<br>Our modelling concepts are hypotheses that I would like feedback on. What concepts seem helpful/useful and what concepts seem harmful/useless? |
+| **User Feedback**<br>We would like feedback on our modelling framework. What concepts seem helpful/useful and what concepts seem harmful/useless? |
 
-Ideally these concepts would lead to a perfectly intuitive tool. In
-reality I recognize that there are important technical details that you
-will need to learn to use the tool effectively. We try to collect the
-more technical ideas in tip boxes.
+While `macpan2` tries to abstract away many of the ugly details of computational modeling,
+knowing a few technical details will help you use it more effectively. We collect these
+details in tip boxes.
 
 | <img src="images/tip.svg" width="120" />                                                                                             |
 |:-------------------------------------------------------------------------------------------------------------------------------------|
 | Tip boxes like this contain technical information that could interrupt the flow of ideas, but is too important to bury in footnotes. |
 
-If you’re attending this workshop, you’re already a highly skilled
+If you’re attending this workshop, you’re already an experienced
 modeller. Many of the concepts will be familiar to you, so you may gain
 more by actively engaging with the tool itself. To support this process
-of self-discovery, I have designed a series of exercises.
+of self-discovery, I have designed a series of exercises. <BMB>clunky: rephrase?</BMB>
 
 | <img src="images/exercise.svg" width="120" />                                                                                                                                                                                                                                                                 |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
