@@ -1009,8 +1009,7 @@ distributional assumptions about model parameters that we would like to
 estimate <BMB>'distributional assumptions' is a little vague, may also be confused with 'distributional specifications' in the priors section above</BMB>. Such a calibrator can be used to fit these parameters to data,
 and then simulate and forecast observable variables using this
 calibrated model. These calibrators can also be used to generate
-confidence intervals for these simulations and forecasts using
-(regularized) maximum likelihood theory.
+confidence intervals for these simulations and forecasts. <BMB>rephrase in active voice ... (deleted regularized maximum likelihood theory because (1) I don't know what 'regularized' MLE theory even is and (2) don't think that clause adds much useful info)</BMB>
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1018,13 +1017,17 @@ confidence intervals for these simulations and forecasts using
 
 ### MAP Estimation
 
+<BMB>It might be clearer to start with maximum likelihood estimation (which
+will be much more familiar to most users than MAP), then mention that if
+you add priors, you technically end up with MAP) - try to avoid adding too
+much cognitive load beyond what's intrinsic to learning a new software platform
+(e.g., new statistical theory)</BMB>
 The recommended approach to model fitting with `macpan2` is [maximum a
-posteriori (MAP)
-estimation](https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation),
+posteriori (MAP) estimation](https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation),
 which finds the values of parameters at the peak of a posterior
 distribution. This approach allows us to get approximate Bayesian
 uncertainty estimates by approximating the posterior distribution as a
-multivariate Gaussian centered at the peak obtained by MAP. One is able
+multivariate Gaussian centered at the peak obtained by MAP. One is able <BMB>see previous comments about "one" and passive voice</BMB>
 to declare that parameters be considered random effects, which means
 that they are integrated out of the posterior distribution using the
 [Laplace
@@ -1032,6 +1035,7 @@ approximation](https://en.wikipedia.org/wiki/Laplace%27s_approximation).
 Using this approach allows us to reduce the dimensionality of the
 posterior distribution used in MAP by only optimizing over the fixed
 effect parameters.
+<BMB>random effects/latent variables seems like an advanced topic?</BMB>
 
 This approximate posterior distribution can be used to obtain confidence
 / credible intervals for any continuous function of model variables. The
@@ -1045,7 +1049,7 @@ two main examples of this are as follows.
 This approach to computing confidence intervals using Gaussian
 approximations to the posterior is a special case of the [delta
 method](https://en.wikipedia.org/wiki/Delta_method) that is implemented
-in [TMB](https://github.com/kaskr/adcomp), which is described
+in [TMB](https://github.com/kaskr/adcomp) and described
 [here](https://kaskr.github.io/adcomp/_book/Appendix.html#theory-underlying-sdreport).
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -1054,20 +1058,22 @@ in [TMB](https://github.com/kaskr/adcomp), which is described
 
 ### Likelihood and Prior Distribution Assumptions
 
-You are free to declare any value in the model to be a trajectory or
-parameter. Trajectories are compared with observed data to produce a
+You can declare any value in the model to be a *trajectory* or a
+*parameter*. Trajectories are compared with observed data to produce a
 likelihood component (e.g., case reports are distributed with a negative
 binomial distribution with dispersion parameter `1`) and parameters are
 used to produce a component of the prior distribution (e.g., the
 transmission rate is log normally distributed with mean `0.2` and
-standard deviation `1`). Available distributional assumptions and
+standard deviation `1`). <BMB>still confused by the emphasis on priors;
+aren't parameters also relevant for straight MLE problems, i.e. no priors?</BMB> Available distributional assumptions and
 settings are described
 [here](https://canmod.github.io/macpan2/articles/likelihood_prior_specs),
 but inspecting the examples linked to in the previous FAQ will be more
 useful for figuring out how to use this functionality.
 
-### Can I hack `macpan2` to use MCMC esimation?
+### Can I use MCMC estimation with `macpan2`?
 
+<BMB>Might want a little more description/context here ...?</BMB>
 [Yes](https://canmod.github.io/macpan2/articles/calibration_advanced.html#hamiltonian-mc).
 
 ### Calibrating Time-Varying Parameters
@@ -1078,7 +1084,7 @@ A common approach for making simple models (i.e.,
 [sir_waning](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_waning),
 [seir](https://github.com/canmod/macpan2/tree/main/inst/starter_models/seir),
 [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver))
-applicable to complex reality, is to use time-varying parameters. A
+more realistic is to use time-varying parameters. A
 common example from the COVID-19 pandemic involved the variation of the
 transmission rate through time in response to public health measures.
 
@@ -1088,14 +1094,13 @@ transmission rate through time in response to public health measures.
 
 ## Inference
 
-Participants will learn how to make inferences using realistically
-parameterized models.
+Participants will learn how to make inferences using parameterized models.
 
 ### Assessing Model Fits
 
 If you have a `model_calibrator` object fitted to a dataset called
-`fitted_data`, you can visualize the goodness-of-fit of this model to
-the data using `ggplot2` in the following manner.
+`fitted_data`, you can visualize the goodness of fit of this model to
+the data using `ggplot2`:
 
 ``` r
 fitted_data = mp_trajectory(model_calibrator)
@@ -1118,12 +1123,12 @@ bounds](https://canmod.github.io/macpan2/reference/mp_sim_bounds), and
 using the general tools for [assessing model
 fits](#assessing-model-fits).
 
-### Counter-Factuals
+### Counterfactuals
 
-Counter-factuals can be introduced by using the [model modification
+Counterfactual scenarios can be introduced by using the [model modification
 tools](#basics-of-modifying-model-specifications), and using the general
 tools for [assessing model fits](#assessing-model-fits).
-Counter-factuals commonly involve making parameters time-varying in the
+Counterfactuals commonly involve making parameters time-varying in the
 forecast period (e.g., in 30 days the transmission rate will change due
 to non-pharmaceutical interventions being considered).
 
@@ -1133,20 +1138,20 @@ to non-pharmaceutical interventions being considered).
 model](https://github.com/canmod/macpan2/tree/main/inst/starter_models/macpan_base#computing-mathcalr_0-with-a-cohort-model)
 includes a discussion of how to compute reproduction numbers and the
 moments of the generation interval distribution for a general
-compartmental model.
+compartmental model.<BMB>I didn't remember this was here: will have to check it out!</BMB>
 
 ## Stratification
 
-When one extends one of the simple models (i.e.,
+When you extend one of the simple models (i.e.,
 [si](https://github.com/canmod/macpan2/tree/main/inst/starter_models/si),
 [sir](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir),
 [sir_waning](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_waning),
 [seir](https://github.com/canmod/macpan2/tree/main/inst/starter_models/seir),
 [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver))
-to be stratified (e.g., by age), transmission/infection processes
+by stratifying it (e.g., by age), transmission/infection processes
 [become more
 complex](https://www.sciencedirect.com/science/article/abs/pii/0025556494000658).
-In these cases one may specify `S`, `E`, and `I` as vectors, and
+In these cases you can specify `S`, `E`, and `I` as vectors, and
 infection rates as matrix operations involving these vectors and
 matrices of transmission parameters. This approach is desecribed
 [here](https://canmod.github.io/macpan2/articles/state_dependent_rates).
