@@ -72,6 +72,8 @@ this)
 
 <!-- comments denoted as <BMB> ... </BMB> -->
 
+<BMB>It's not obvious to me why you have this as a `.md` file rather than a `.[qr]md` file where the outputs are generated dynamically? That makes sure everything is properly synced ...</BMB>
+
 Please read the
 [syllabus](https://canmod.github.io/macpan-workshop/syllabus) before
 participating in this workshop. The instructor will review this syllabus
@@ -153,7 +155,7 @@ library(lubridate)
 
 This document was produced with the following R environment.
 
-<BMB>I'm not sure why you are using the `|> print()` idiom. I know JD prefers this for explicitness in code that's going to be batch-run, but it seems unnecessary and confusing in this context ... (I might suggest including this info at the *end* of the document, as a postscript, since most of this info will only be useful for troubleshooting. You could if you liked mandate minimum versions of R/packages (e.g. tidyverse version 2.0.0 and R version >= 4.4.0 ...)</BMB>
+<BMB>I'm not sure why you are using the `|> print()` idiom. I know JD prefers this for explicitness in code that's going to be batch-run, but it seems unnecessary and confusing in this context ... (I might suggest including this info at the *end* of the document, as a postscript, since most of this info will only be useful for troubleshooting. You could if you liked mandate minimum versions of R/packages (e.g. tidyverse version 2.0.0 and R version >= 4.4.0 ... [or whatever, given constraints on PHAC setup])</BMB>
 ``` r
 sessionInfo() |> print()
 ```
@@ -297,23 +299,21 @@ There are three parts to this specification.
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Model specification objects, like `sir` above, can be produced <BMB>try for active voice: "you can use several functions to produce"?</BMB> using several different functions. Above I produced such an object using `mp_tmb_library()`, which reads pre-existing specifications in from the library. If you were to go the [directory](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir) that defines this library model you would see [the script](https://github.com/canmod/macpan2/blob/main/inst/starter_models/sir/tmb.R) that actually produces the specification. This script uses the `mp_tmb_model_spec()` function to do so, and you can use this function directly yourself to produce your own model specifications. Later we will learn about other functions that take a model specification and return a modified version of this specification. This is useful when a model needs to be modified so that it can be compared with data (e.g., account for under-reporting, time-varying transmission rates in response to school closures). |
+| Model specification objects, like `sir` above, can be produced <BMB>try for active voice: "you can use several functions to produce"?</BMB> using several different functions. Above I produced such an object using `mp_tmb_library()`, which reads pre-existing specifications in from the library. If you go to the [directory](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir) that defines this library model you will see [the R script](https://github.com/canmod/macpan2/blob/main/inst/starter_models/sir/tmb.R) that actually produces the specification, using the `mp_tmb_model_spec()` function; you can use this function yourself to produce your own model specifications. Later we will learn about other functions that take a model specification and return a modified version of this specification. This is useful when a model needs to be modified so that it can be compared with data (e.g., account for under-reporting, time-varying transmission rates in response to school closures).<BMB>clarify?</BMB>
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The `sir` model illustrates the two kinds of expressions that can be used to define model behaviour: (1) Generic math expressions (e.g., `S ~ N - I - R`) and (2) flows among compartments (e.g., `mp_per_capita_flows(from ...)`). In generic math expressions, the tilde, `~`, is used to denote assignment. For example, the expression, `S ~ N - I - R`, says that the result of `N - I - R` is assigned to the quantity, `S`. Any function listed [here](https://canmod.github.io/macpan2/reference/engine_functions) can be used on the right-hand-side of these expressions. Each flow expression corresponds to a single flow between compartments. The tilde-based math expressions and flow expressions can be mixed to provide a great deal of flexibility in model specifications. Throughout I will discuss the relative advantages and disadvantages of using one or the other. |
+| The `sir` model illustrates the two kinds of expressions that can be used to define model behaviour: (1) Generic math expressions (e.g., `S ~ N - I - R`) and (2) flows among compartments (e.g., `mp_per_capita_flows(from ...)`). In generic math expressions, the tilde, `~`, is used to denote assignment. For example, the expression, `S ~ N - I - R`, says that the result of `N - I - R` is assigned to the quantity, `S`. Any function listed [here](https://canmod.github.io/macpan2/reference/engine_functions) can be used on the right-hand side of these expressions. Each flow expression corresponds to a single flow between compartments. The tilde-based math expressions and flow expressions can be mixed to provide a great deal of flexibility in model specifications.<BMB>delete last sentence?</BMB> Throughout I will discuss the relative advantages and disadvantages of using one or the other. |
 
 ### Simulating Dynamics
 
 The main thing that you will do with model specifications like `sir` is
-to simulate dynamics under these models. Because specifications come
+to simulate dynamics under these models. <BMB>comment on why this is useful? Explore counterfactuals, understand dynamics in preparation for calibration, .. ?</BMB> Because specifications come
 with default values for parameters and initial states, they can be
-simulated from without any further specification. This does not mean
-that model library specifications will typically be ready for any
-particular application without modification, and I will discuss many
-types of modifications that can be made to these models today. However,
-typically the first thing to do when given a new model is to simulate
-from it, so you develop this skill immediately.
+simulated from without adding any further information. However, you will almost always need to modify a built-in model specification to apply it to your particular situation; we will discuss many
+ways to modify these models.
+
+Typically the first thing to do to understand and validate a new model is to simulate from it, so we will work on this immediately.
 
 | <img src="images/exercise.svg" width="120" />                                                                                                    |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -321,15 +321,14 @@ from it, so you develop this skill immediately.
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Simple, Consistent, and General Format for Simulation Output**<br>Simulations of `macpan2` models are always returned in the same format – there are no options. This inflexibility is deliberate. The simulation data format is simple and easily adapted to whatever data organizational preferences you might have. This choice also benefits us because it means we do not need to worry about reinventing data preparation tools (many of which already exist) and focus on epidemiological modelling functionality (of which fewer options exist). [This](https://canmod.github.io/macpan2/articles/quickstart#generating-simulations) article gives a brief but full description of the data format. |
+| **Simple, Consistent, and General Format for Simulation Output**<br>`macpan2` models always return simulation outputs in the same format, a *long format* data frame where each output variable (e.g. `S`, `I`, `R`) has a separate row for every time. This output format is simple, works well with existing R frameworks (e.g. `tidyverse`/`ggplot2`) and can easily be restructured to other formats (e.g., with `tidyr::pivot_wider()`). [This](https://canmod.github.io/macpan2/articles/quickstart#generating-simulations) article gives a brief but full description of the data format. |
 
 ### Relating Model Specifications to Box Diagrams
 
 Model specification objects, such as the `sir` object produced in the
 previous section, are essentially textual descriptions of compartmental
-model flow diagrams. Below I print out the *during the simulation loop*
-portion of the `sir` object, and plot the corresponding flow diagram,
-highlighting the relationship between the two.
+model flow diagrams. Below we compare the *during the simulation loop*
+portion of the `sir` object with the corresponding flow diagram:
 
 ``` r
 mp_print_during(sir)
@@ -350,7 +349,7 @@ mp_print_during(sir)
 
 ### Relating Model Specifications to Explicit Dynamics
 
-One aspect of the previous model printout that might be unclear to you
+One possibly unclear aspect of the previous model printout
 is the specific mathematical meaning of the `mp_per_capita_flow`
 functions, and their arguments.
 
@@ -365,13 +364,13 @@ mp_print_during(sir)
     ##      abs_rate = "infection")
     ## 2: mp_per_capita_flow(from = "I", to = "R", rate = "gamma", abs_rate = "recovery")
 
-The technical documentation for this (and related) functions is
+You can find the technical documentation for this function (and related functions)
 [here](https://canmod.github.io/macpan2/reference/mp_per_capita_flow),
 but the following set of definitions summarizes the terminology.
 
 | <img src="images/definition.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Absolute flow rate:** Total number of individuals flowing from one compartment to another in a single time-step. We call absolute flows things like `infection` and `recovery`. These names specified using the `abs_rate` argument in the [mp_per_capita_flow()](https://canmod.github.io/macpan2/reference/mp_per_capita_flow) function. The numerical value of the absolute flow rate depends on the *per-capita flow rate*, but in a way that depends on the *state update method*.<br><br>**Per-capita flow rate**: The rate at which individuals flow from one compartment to another in a single time-step, per individual in the source compartment. For example, the per-capita infection rate is often given by `beta * I / N` and for recovery is often `gamma`. These expressions are specified using the `rate` argument of the `mp_per_capita_rate` function.<br><br>**State update method**: Mathematical framework for computing *absolute flow rates* from *per-capita flow rates*. For example, the difference equation (a.k.a. Euler ODE solver, [mp_euler()](https://canmod.github.io/macpan2/reference/state_updates)) state update method results in `infection = S * (beta * I / N)`, with the *per-capita flow rate* in parentheses. For the state update method using the Runge-Kutta 4 ODE solver ([mp_rk4()](https://canmod.github.io/macpan2/reference/state_updates)), the relationship between *absolute flow rates* and *per-capita flow rates* is more complex because it accounts (to some extent) for the fact that the state variables change continuously through a single time step. |
+| **Absolute flow rate:** Total number of individuals flowing from one compartment to another in a single time-step. We call absolute flows things like `infection` and `recovery`. These names are specified using the `abs_rate` argument in the [mp_per_capita_flow()](https://canmod.github.io/macpan2/reference/mp_per_capita_flow) function. <BMB>I may have commented before that I find this terminology confusing: an argument name `abs_rate` suggests to me that we're going to be *defining* an absolute rate, not just giving it a name ...</BMB> The numerical value of the absolute flow rate depends on the *per-capita flow rate*, but in a way that depends on the *state update method*.<br><br>**Per-capita flow rate**: The rate at which individuals flow from one compartment to another in a single time-step, per individual in the source compartment. For example, the per-capita infection rate is often given by `beta * I / N` and for recovery is often `gamma`. These expressions are specified using the `rate` argument of the `mp_per_capita_rate` function.<br><br>**State update method**: Mathematical framework for computing *absolute flow rates* from *per-capita flow rates*.<BMB>There are two qualititatively different things going on here: (1) instantaneous to period rates (Euler, RK, etc.) (2) per capita to absolute. You might want to clarify that this is about the first ...</BMB> For example, the difference equation (a.k.a. Euler ODE solver, [mp_euler()](https://canmod.github.io/macpan2/reference/state_updates)) state update method results in `infection = S * (beta * I / N)`, with the *per-capita flow rate* in parentheses. For the state update method using the Runge-Kutta 4 ODE solver ([mp_rk4()](https://canmod.github.io/macpan2/reference/state_updates)), the relationship between *absolute flow rates* and *per-capita flow rates* is more complex because it accounts for the fact that the state variables change continuously through a single time step. |
 
 Now that these definitions are in place, let’s look at an example. One
 can use the
@@ -424,7 +423,7 @@ $$
 We can easily use the `sir` compartmental model object to simulate it as
 an ODE using the `mp_rk4()` function, which uses the [Runge Kutta 4 ODE
 solver](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods).
-
+<BMB>I'm not convinced that this is worth showing. It seems overwhelming. (I would guess that very few people actually care about/would gain a lot of insight from seeing the steps of the RK4 algorithm written out explicitly ... ??</BMB>
 ``` r
 sir |> mp_rk4() |> mp_expand() |> mp_print_during()
 ```
@@ -465,7 +464,7 @@ sir |> mp_rk4() |> mp_expand() |> mp_print_during()
 Here is one more example of an SIR model expansion that uses the
 [Euler-multinomial
 distribution](https://kingaa.github.io/manuals/pomp/html/eulermultinom.html)
-to simulate a compartmental model with process error.
+to simulate a compartmental model with process error. <BMB>Euler-multinomial is going to be unfamiliar to most people; maybe mention that is a generalization of (and in this case exactly equal to) binomial sampling?</BMB>
 
 ``` r
 sir |> mp_euler_multinomial() |> mp_expand() |> mp_print_during()
@@ -496,18 +495,18 @@ the absolute flow rates per time step.
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Embrace Difference Equations**<br>The original [McMasterPandemic](https://github.com/mac-theobio/McMasterPandemic) project was based entirely on discrete time models. Simulations from discrete time difference equations requires little math to implement and understand. This simplicity is nice in applied work where the barriers to real-world impact do not usually include mathematical novelty and elegance. Further, when modelling a real system it is natural to compare simulations with observed data, which are measured at discrete times anyways.<br><br>Difference equations are not without their drawbacks however. Many results in mathematical epidemiology come from ODEs and various stochastic processes, and so when using difference equations epidemiologists might be concerned that their intuition from ODEs will not hold. Difference equations can also be less stable (e.g., state variables going below zero) than ODEs, which can become a real problem when calibrating models using trajectory matching. Therefore we make it easy to check these concerns by using a [state update method](https://canmod.github.io/macpan2/reference/state_updates) like `mp_rk4()` (for a simple ODE solver) or `mp_euler_multinomial()` (for a simple process error model) to overcome these concerns whenever necessary.<br><br>When using these alternative state update methods keep in mind that they too can be thought of as difference equation model. Carefully inspect the last three lines of any of the expanded `sir` models, which constitute the same set of difference equations no matter what state update method is used. This similarity indicates that all state update methods boil down to discrete-time difference equations, but with different approaches to calculating the absolute flow rates (e.g., `infection` and `recovery`). These absolute rate variables describe the changes in the state variables (e.g., `S`, `I`, `R`) due to different processes over a single time-step, allowing for continuous change within a time-step. This means, for example, that the time-series of the `infection` variable will contain the incidence over each time-step. So, for example, if each time-step represents one week, the `infection` variable will contain weekly incidence values.<br><br>In summary, the choice of state update method will often not matter in applied work, but when it does the [state update methods](https://canmod.github.io/macpan2/reference/state_updates) make it simple to explore options. |
+| **Embrace Difference Equations**<br>The original [McMasterPandemic](https://github.com/mac-theobio/McMasterPandemic) project was based entirely on discrete time models. Simulations from discrete time difference equations require little math to implement and understand. This simplicity is nice in applied work where the barriers to real-world impact do not usually include mathematical novelty and elegance. Further, when modelling a real system it is natural to compare simulations with observed data, which are measured at discrete times anyways.<br><br>Difference equations are not without their drawbacks however. Many results in mathematical epidemiology come from ODEs and various stochastic processes, and so when using difference equations epidemiologists might be concerned that their intuition from ODEs will not hold. Difference equations can also be less stable (e.g., state variables going below zero) than ODEs, which can become a real problem when calibrating models using trajectory matching. Therefore we make it easy to check these concerns by using a [state update method](https://canmod.github.io/macpan2/reference/state_updates) like `mp_rk4()` (for a simple ODE solver) or `mp_euler_multinomial()` (for a simple process error model) to overcome these concerns whenever necessary.<br><br>When using these alternative state update methods keep in mind that they too can be thought of as difference equation model. Carefully inspect the last three lines of any of the expanded `sir` models, which constitute the same set of difference equations no matter what state update method is used. This similarity indicates that all state update methods boil down to discrete-time difference equations, but with different approaches to calculating the absolute flow rates (e.g., `infection` and `recovery`). These absolute rate variables describe the changes in the state variables (e.g., `S`, `I`, `R`) due to different processes over a single time-step, allowing for continuous change within a time-step. This means, for example, that the time-series of the `infection` variable will contain the incidence over each time-step. So, for example, if each time-step represents one week, the `infection` variable will contain weekly incidence values.<br><br>In summary, the choice of state update method will often not matter in applied work, but when it does the [state update methods](https://canmod.github.io/macpan2/reference/state_updates) make it simple to explore options. <BMB>I'm not convinced of the value of this digression ... there's no logical connection between the scale on which the underlying dynamics are defined and the timing of the observations (which might be integrated values such as incidence over a time period, or instantaneous measures, or some kind of average (or delayed/convolved thingy) ... </BMB>
 
 | <img src="images/exercise.svg" width="120" />                                                                                                                                                                                                                                                                   |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Write out by hand the last four lines of an expanded SEIR model.<br><br>[Read](https://canmod.github.io/macpan2/articles/example_models#using-examples) the [SEIR model](https://github.com/canmod/macpan2/tree/main/inst/starter_models/seir) from the model library and test if you were correct. |
+| Write out by hand the last four lines of an expanded SEIR model.<br><br>[Read](https://canmod.github.io/macpan2/articles/example_models#using-examples) the [SEIR model](https://github.com/canmod/macpan2/tree/main/inst/starter_models/seir) from the model library and test if you were correct. <BMB>This should specify an *Euler-mode* SEIR model ... </BMB>|
 
 TODO: Simulate dynamics with different approaches.
 
-### Basics of Modifying Model Specifications
+### Modifying Model Specifications
 
 The models in the model library are intended to provide a place to
-start, so let’s get started doing this.
+start, so let’s get started doing this. <BMB>What does this sentence mean?</BMB>
 
 | <img src="images/exercise.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -527,17 +526,18 @@ functions, which take a loaded model specification object (like the
 
 ### Compare Simulated and Observed Incidence
 
+<BMB>Don't assume that the previous isn't interesting!</BMB>
 Now we are getting to the interesting stuff in this first `Exploration`
 section of the `Exploration-Parameterization-Inference-Stratification`
 methodology: using data (and other empirical information) and
 simulations together to understand a system. This step is critical in
 epidemiological modelling for applied public health work. No matter how
 fancy you get with your techniques, your model must always be relevant
-to a specific place, time, and public health concern.
+to a specific place, time, and public health concern.<BMB>do we need the last sentence? Feels lecture-y</BMB>
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Data Prep and Model Modifications Are Two Sides of the Same Coin**<br>To confront a model with data one needs to do two general classes of things: (1) access and prepare data and (2) modify the model so that it is relevant to those data. Typically there is an interplay between how to prepare data and how to modify the model. For example, one might choose to deal with under-reporting by multiplying the incidence time-series by a reasonably-chosen constant. In this case one might not need to modify the model because observed incidence would be comparable with the number of modelled new cases each time-step. On the other hand, one might choose to post-process the modelled number of new cases by multiplying them by a reporting probability, and then comparing these simulations with the raw observed data. In this section I will explore a specific path to handling these issues. |
+| **Data Prep and Model Modifications Are Two Sides of the Same Coin**<br>To confront a model with data one needs to do two general classes of things: (1) access and prepare data and (2) modify the model so that it is relevant to those data. Typically there is an interplay between how you prepare the data and how you set up (or modify) the model. For example, you might choose to deal with under-reporting by dividing the incidence time-series by a known underreporting rate. In this case you wouldn't need to modify the model, because scaling the data would account for underreporting. On the other hand, you might choose to transform the modelled incidence (number of new cases per time period) into a modelled *observed* incidence by multiplying the incidence by the reporting probability, and then comparing these simulations with the raw observed data. In this section I will explore a specific path to handling these issues. <BMB>is making the likelihood a binomial draw from the true incidence a third option?</BMB>
 
 Let’s get started by loading in some familiar Ontario COVID-19 data.
 
@@ -575,7 +575,7 @@ covid_on |> summary()
     ##                                                             NA's   :1793
 
 Hmmm … lots of suspicious things to investigate … but let’s stay focused
-on case reports, which I will compare with simulated incidence.
+on case reports, which I will compare with simulated incidence.<BMB>Maybe a little more detail? I do wonder if you want to make your own clean version of these data for the workshop? I feel like if you're going to admit that messy data exist, you might need to spend more time discussing checking/cleaning ...</BMB>
 
 ``` r
 reports = (covid_on
@@ -585,14 +585,15 @@ reports = (covid_on
 (reports
     |> ggplot()
     + geom_line(aes(date, value))
-    + theme_bw()
+    + theme_bw()  
 )
 ```
+<BMB>I would prefer to run `theme_set(theme_bw())` at the beginning of the lesson (if people ask you can explain why their plots look different). Also, I have a preference for including the basic/shared mappings in the `ggplot()` call so they can be shared by several downstream geoms (i.e. `ggplot(aes(date, value)) + geom_point()`)</BMB>
 
 ![](figures/exploratory-plot-reports-1.png)<!-- -->
 
-Just to start, let’s focus on a single wave so I do not need to worry
-about time-varying parameters and/or the causes of waves.
+Let’s focus on a single wave so we don't need to worry
+about variation over time in the epidemic parameters and other complications arising from multiple epidemic waves.
 
 ``` r
 early_reports = filter(reports, date < as.Date("2020-07-01"))
@@ -605,12 +606,9 @@ early_reports = filter(reports, date < as.Date("2020-07-01"))
 
 ![](figures/early-reports-1.png)<!-- -->
 
-Before comparing these data with simulations, I update the `sir` model
-to make it more realistic. We do not need to be perfect at this stage,
-just reasonable. The goal is to make an initial plot containing both
-simulations and observed data. This will form the foundation for
-modifying the model to make it capture important features of the
-underlying processes.
+Before comparing these data with simulations, we update the `sir` model
+to make it slightly more realistic.  Our goal is to make an initial plot containing both a reasonable simulation run and the  observed data, to serve as a foundation for
+further model modifications.
 
 ``` r
 sir_covid = mp_tmb_insert(sir
@@ -636,7 +634,7 @@ sir_covid = mp_tmb_insert(sir
           gamma = 1/14      ## 2-week recovery
         , beta = 2.5/14     ## R0 = 2.5
         , report_prob = 0.1 ## 10% of cases get reported
-        , N = 1.4e7         ## ontario population  
+        , N = 1.4e7         ## Ontario population  
         , I = 50            ## start with undetected infections
     )
 )
@@ -672,8 +670,9 @@ print(sir_covid)
 | Take a moment to reconcile the code that produced this model update, with the printout of the updated model.<br><br>Did anything surprise you?<br><br>Would you have made different modelling choices?<br><br>If so, what questions do you have about how to code them? |
 
 Now we [simulate](#simulating-dynamics) the trajectory of the `reports`
-variable in the model, and plot it against the observed data.
+variable in the model, and plot it along with the observed data.<BMB>: plotting "against" observed data would suggest a predicted-vs-observed scatter plot to me ...</BMB>
 
+<BMB>Do you discuss handling time anywhere? (Even vs uneven spacing, missing data, aggregating daily to weekly cases, time steps vs dates ...</BMB>
 ``` r
 sim_early_reports = (sir_covid 
     |> mp_simulator(
@@ -700,38 +699,44 @@ comparison_early_reports = bind_rows(
     ## observed data, otherwise the simulations
     ## will make it impossible to see the data
     + coord_cartesian(ylim = c(0, max(early_reports$value, na.rm = TRUE)))
-    
     + theme_bw() + theme(legend.position="bottom")
 )
 ```
+<BMB>would `ylim(0, ...)` be simpler than `coord_cartesian()` ?</BMB>
 
 ![](figures/early-covid-comparison-1.png)<!-- -->
 
 It took me a few iterations of model adjustments to make this plot,
+<BMB>What are you hiding? It's good to admit this didn't work on the first try,
+but would also make me wonder what your process was and how you knew what adjustments to make ...</BMB>
 which illustrates a reasonably good fit before the peak of the wave and
 quite poor fit after it. Still, the next two concepts argue that this is
 quite a bit of progress and sets us up nicely for next steps.
+<BMB>last sentence is unclear to me. Do we need it?</BMB>
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                 |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Goodness of Fit Can Come Later**<br>Being able to generate simulations that are comparable to observed data is an important step in-and-of-itself in applied public health modelling, even if the comparison shows that the model is inconsistent with the data. Just having this comparison pipeline sets us up to assess whether subsequent model modifications help explain the system. |
+| **Goodness of Fit Can Come Later**<br>Being able to generate simulations that are comparable to observed data is an important step in and of itself in applied public health modelling, even if the comparison shows that the model is inconsistent with the data. Just having this comparison pipeline sets us up to assess whether subsequent model modifications help explain the system. |
 
-| <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| <img src="images/concept.svg" width="120" />                                                                                                                               
+<BMB>Note that you have to get the parameters in a reasonable ballpark, as well as having an adequate model structure? It can be easier to work backward from more meaningful epidemiological parameters (such as $R_0$) than trying to figure out $\beta$ from scratch</BMB>
+
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Bad Fits Can Be Due to Bad Models and/or Bad Data**<br>It can be tempting to assume that lack of fit can mean that the model is bad, but in applied work this is not nearly good enough. What we want is to make the most appropriate recommendations to public health policy makers, and this goal can be jeopardized by bad data as well as bad modelling. Sometimes the exploration step can involve producing various simulations to build up hypotheses, and these hypotheses can be more useful to policy makers than a model that fits extremely well to a dataset that we believe has low quality. Unfortunately there is no free lunch here, and we need to be wise. |
+| **Bad Fits Can Be Due to Bad Models and/or Bad Data**<br>It can be tempting to assume that lack of fit can mean that the model is bad, but in applied work this is not good enough. What we want is to make the most appropriate recommendations to public health policy makers, and this goal can be jeopardized by bad data as well as bad modelling. Sometimes the exploration step can involve producing various simulations to build up hypotheses, and these hypotheses can be more useful to policy makers than a model that fits extremely well to a dataset that we believe has low quality. Unfortunately there is no free lunch here, and we need to be wise.<BMB>I don't quite get this point, or maybe it's not expressed clearly. The heading is certainly plausible, but what does "not good enough" mean? What does "we need to be wise" mean? What is your take-home message here?</BMB>|
 
 ### Reporting Delays
 
-The challenge introduced by reporting delays is that we cannot compare
+When cases are reported after some delay, we cannot directly compare
 the simulated incidence values from our model with observed case
-reports, because there is a reporting delay. The following toy example
+reports from the same time period. The following toy example
 shows how the apparent peak in the data follows the simulations.
 
 ![](figures/apparent-peak-1.png)<!-- -->
 
 So before comparing the simulations with observed data, we use
-convolution to transform the simulated incidence values into a time
-series of reported cases that is expected by the model. Keep reading to
+*convolution* to transform the simulated incidence values into a time
+series of reported cases that is expected by the model <BMB>or, "to model
+the process of reporting delay"</BMB>. Keep reading to
 find out specifically how this is done.
 
 ![](figures/convolution-series-1.png)<!-- -->
@@ -741,13 +746,17 @@ manner that accounts for reporting delays.
 
 ![](figures/report-example-1.png)<!-- -->
 
-Now to explain how the expected reported case curve is computed. In this
-method we assume that each new case waits a Gamma-distributed random
-amount of time before it is observed. The mean and coefficient of
-variation of this distribution can be fitted parameters. During the
+In this method we assume that each new case waits a Gamma-distributed random
+amount of time before it is observed.<BMB>"that the elapsed time between a case
+occurring (e.g., an infection event) and the time it is observed (a case report)
+follows a Gamma distribution</BMB> The average delay, and the variation in
+delay time (the mean and coefficient of variation of the Gamma distribution), can
+either be based on outside knowledge, or (in principle) can be estimated from the data. During the
 COVID-19 pandemic the McMaster group found that a Gamma distribution
 with mean delay of 11 days and coefficient of variation of 0.25 was a
-reasonable model.
+reasonable model. <BMB>Delay parameters would be very hard to estimate without some
+independent data stream ... don't overstate our confidence in these parameters - we didn't calibrate,
+just picked some numbers we thought were reasonable ...</BMB>
 
 The following figure illustrates how a single expected case report is
 computed, in this case at time 26. The Gamma distribution of delay times
@@ -755,14 +764,15 @@ is represented as bars giving the probability that a new case at a
 particular time is reported at time 26, which is given as the dashed
 horizontal line. Note how the reported number of cases is roughly near
 (but not identical) to the simulated number of cases at the peak of the
-delay distribution. This makes sense because we would expect most of our
+delay distribution - we would expect most of our
 reports now to come from the highest probability time in the past.
+<BMB>this isn't entirely clear to me, but I'm not looking at the picture.</BMB>
 
 ![](figures/explain-convolution-1.png)<!-- -->
 
-In `macpan2` we typically have a model that doesn’t account for delayed
-reporting and we want to update it to do so before fitting to data. One
-can use the `mp_tmb_insert_reports()` function for this purpose.
+Most of the simple models provided in the `macpan2` model library don't account for 
+reporting delays. We can use the `mp_tmb_insert_reports()` function to add 
+reporting delays to the `si` model:
 
 ``` r
 si_with_delays = (si
@@ -788,37 +798,40 @@ si_with_delays = (si
 
 ![](figures/sir-with-delays-1.png)<!-- -->
 
-Notice how the `11`-day reporting delay specific using the `mean_delay`
+Notice how the `11`-day reporting delay specified using the `mean_delay`
 argument of the `mp_tmb_insert_reports` function has produced a
 `reports` variable that peaks about `9` or `10` days after the new
-`infection` peak. [Non-linear
+`infection` peak. <BMB>why are 9, 10, 11 typeset in monospace font?</BMB> [Non-linear
 averaging](https://en.wikipedia.org/wiki/Jensen's_inequality) has
 shifted the individual-level delay of `11` days to something a little
 lower at the population level. Still, the `mp_tmb_insert_reports`
 function has had the desired qualitative effect of shifting the
 `reports` peak to the right of the `infection` peak.
+<BMB>Nonlinear averaging stuff too much detail?</BMB>
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Read the documentation on [mp_tmb_insert_reports](https://canmod.github.io/macpan2/reference/mp_tmb_insert_reports), and have a look at the following [model library](https://canmod.github.io/macpan2/articles/examples) examples that utilize this delay modelling functionality: [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver), [macpan_base](https://github.com/canmod/macpan2/tree/main/inst/starter_models/macpan_base), [wastewater](https://github.com/canmod/macpan2/tree/main/inst/starter_models/ww). |
+| Read the documentation on [mp_tmb_insert_reports](https://canmod.github.io/macpan2/reference/mp_tmb_insert_reports), and have a look at the following [model library](https://canmod.github.io/macpan2/articles/examples) examples that use this delay modelling functionality: [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver), [macpan_base](https://github.com/canmod/macpan2/tree/main/inst/starter_models/macpan_base), [wastewater](https://github.com/canmod/macpan2/tree/main/inst/starter_models/ww). |
 
 ### Hospital Admissions and Occupancy
 
-When these data are available and of high quality it is typically
+<BMB>awkward sentence</BMB> When these data are available and of high quality it is typically
 straightforward to compare them with simulations. One must obviously
 have a model containing hospital compartments (or modify an existing
 model to contain such compartments). One must also make sure that
 admissions are compared with *flows into* a hospital compartment and
 that occupancy is compared with a *state variable* of a hospital
 compartment.
+<BMB>In general I think 'one' is awkward for this format, I would generally use "you" or "we" (I have probably made some edits along these lines</BMB>
+<BMB>Do you want to make the incidence vs prevalence point somewhere more generally (in a box?)</BMB>
 
 | <img src="images/tip.svg" width="120" />                                                                                                 |
 |:-----------------------------------------------------------------------------------------------------------------------------------------|
-| The [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver) model gives an example that utilizes hospital data. |
+| The [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver) model gives an example that uses hospital data. |
 
 ### Symptom Status
 
-The *simple* compartmental models (i.e.,
+The simple compartmental models (i.e.,
 [si](https://github.com/canmod/macpan2/tree/main/inst/starter_models/si),
 [sir](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir),
 [sir_waning](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_waning),
@@ -827,108 +840,109 @@ do not account for variation in symptoms amongst infected individuals.
 However, the severity of symptoms can have a big impact on what cases
 get reported.
 
-For some applications it is necessary to distinguish between different
-symptom statuses, which we do by splitting up the `I` box. This
-splitting up can be done by replacing all calls to
+For some applications we want to distinguish between different
+symptom statuses; we do this by splitting up the infected compartment. This
+splitting can be done by replacing calls to
 `mp_per_capita_flows()` that involve `I` with flows that involve several
 `I` boxes (e.g., `I_mild`, `I_severe`) that group together individuals
 with similar symptom status.
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                             |
 |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The [macpan_base](https://github.com/canmod/macpan2/tree/main/inst/starter_models/macpan_base) model utilizes this technique. A discussion of this technique is also given in the [examples on the mp_per_capita_flow() help page](https://canmod.github.io/macpan2/reference/mp_per_capita_flow.html#ref-examples). |
+| The [macpan_base](https://github.com/canmod/macpan2/tree/main/inst/starter_models/macpan_base) model uses this technique. A discussion of this technique is also given in the [examples on the mp_per_capita_flow() help page](https://canmod.github.io/macpan2/reference/mp_per_capita_flow.html#ref-examples). |
 
 | <img src="images/exercise.svg" width="120" />                                                                                                        |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | Modify the [si](https://github.com/canmod/macpan2/tree/main/inst/starter_models/si) model so that it has three boxes: `S`, `I_mild`, and `I_severe`. |
 
-In cases where report data are broken down by symptom status, then this
+In cases where report data are broken down by symptom status, this
 technique of splitting up `I` into several boxes might be sufficient.
-However, if cases with different symptom statuses are combined in
-reports, an additional model component must be added that weights the
-relative likelihood that different symptom statuses will be reported.
-This additional component is related to the [reporting
-delay](#reporting-delays) functionality.
+If cases with different symptom statuses are combined in
+reports, we need to an add an additional model component that computes
+a weighted sum of the incidence (or prevalence) of cases with different symptom
+status, based on the relative likelihood that infections different symptom statuses will be reported.
+This additional component is related to the [reporting delay](#reporting-delays) functionality.<BMB>how?</BMB>
 
 ### Seroprevalence
 
-It is often the case that [serological data can be used to estimate the
-degree of immunity in the
-population](https://en.wikipedia.org/wiki/Seroprevalence), which can in
+[Serological data](https://en.wikipedia.org/wiki/Seroprevalence) can often be used to estimate the
+degree of immunity in the population, which can in
 turn be used to estimate the number of individuals in recovered,
 vaccinated, and otherwise immune (or partially immune) compartments. The
 [shiver](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver)
 model description provides an example of this technique, which involves
-transforming either the raw seroprevalence data so that it is comparable
-with different compartments or adding a variable to the model that
+either transforming the raw seroprevalence data so that it is comparable
+with compartments in the model or adding a variable to the model that
 produces a transformation of the variables tracking immune states that
 is comparable with the raw seroprevalence data.
 
 | <img src="images/concept.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Multiple Trajectories**<br>Models that can simulate multiple empirically observable variables have a better chance of being reliable. For example, a model that only generates case reports will be less able to learn from data as one that can generate seroprevalence as well. In particular, seroprevalence will give better estimates of recovery parameters (for obvious reasons) but also might do so for transmission parameters as well because of better estimates of the size of the susceptible pool. |
+| **Multiple Trajectories**<br>Models that can simulate multiple empirically observable variables have a better chance of being reliable. For example, a model that only generates case reports will be less able to learn from data as one that can generate seroprevalence as well. In particular, seroprevalence will give better estimates of recovery parameters (for obvious reasons) but also might do so for transmission parameters as well because of better estimates of the size of the susceptible pool. <BMB>This box is vaguely written: what is a "better chance of being reliable"? Generally a bit unclear</BMB> |
 
 ### Vaccination
 
-If you happen to now the vaccination schedule (e.g., number of doses
+If you have data on the vaccination schedule in a population (e.g., number of doses
 administered per time-step for each time-step in the simulation), one
 simple way to model vaccination is to create a [time-varying
 parameter](https://canmod.github.io/macpan2/articles/time_varying_parameters)
 that moves a known time-dependent number of individuals from a
-susceptible compartment to a protected compartment. An even simpler
-variation is just to include a constant number of doses per day, but
-this approach can be too simplistic especially when investigating
-questions of vaccine efficiacy.
+susceptible compartment to a protected compartment. (An even simpler
+variation is to assume that a constant number of doses are administered per day.)
 
-One complexity with this approach is that it can reduce the number of
-susceptible individuals below zero, if the user is not careful. This can
+One potential issue with this approach is that in some cases it can reduce the number of
+simulated susceptible individuals below zero. This impossible scenario occurs
 happen when the simulated number of `S` individuals drops below the
-number of doses per day. This issue could be addressed by using the
-minimum of `S` and the known number of doses as the realized number of
-doses. However this approach has severe drawbacks when calibrating,
-because as we will learn in the [Parameterization](#parameterization)
-section `macpan2` uses the
-[TMB](https://kaskr.github.io/adcomp/_book/Introduction.html) package
-for optimizing fit to data and TMB becomes much less efficient when we
-use discontinuous functions like this. To address this complexity we can
-use continuously saturating functions of `S` to model the number of
-doses, a technique that is covered [here with the shiver
+number of doses per day.<BMB>This is an odd way to put it: maybe "when the 
+observed number of daily vaccinations is larger than the number of
+`S` individuals remaining in the simulation".</BMB> 
+You could address this issue setting a ceiling (equal to the current simulated
+number of susceptibles) on the number of simulated daily vaccinations . 
+This approach causes problems when calibrating, however;
+as we will learn in the [Parameterization](#parameterization)
+section, `macpan2` depends on the behaviour of the system being a *differentiable* (smooth)
+function of the model parameters, which rules out sharp thresholds. 
+We can get around this problem by modeling the number of doses as a 
+saturating functions of `S`, a technique that is covered [here with the shiver
 model](https://github.com/canmod/macpan2/tree/main/inst/starter_models/shiver#variable-vaccination-rate).
-This technique is also discussed in the [examples on the
-mp_per_capita_flow() help
+This technique is also discussed in the [examples on the mp_per_capita_flow() help
 page](https://canmod.github.io/macpan2/reference/mp_per_capita_flow.html#ref-examples).
 
 ### Wastewater Pathogen Concentrations
 
+<BMB>Say something general about wastewater?</BMB>
 Wastewater models must have two kinds of compartments: those that
 represent numbers of people and those that represent the concentration
 of a pathogen in wastewater. Flows from a person-box into a
-wastewater-box (e.g., shedding from `I` to `W`) requires one to use the
+wastewater-box (e.g., shedding from `I` to `W`) requires the
 `mp_per_capita_inflow()` function instead of the `mp_per_capita_flow()`
 function (see
 [here](https://canmod.github.io/macpan2/reference/mp_per_capita_flow)
-for details). This is because flowing from `I` to `W` does not cause a
-reduction in the size of `I`, because people are not *becoming*
-pathogens. The `mp_per_capita_inflow()` function ensures that `W` is
-increased by this shedding process without decreasing `I`. This
+for details); flowing from `I` to `W` does not reduce `I`, because people are 
+*shedding* pathogens, not *becoming* pathogens. The `mp_per_capita_inflow()` function ensures that this shedding process
+increases `W` without decreasing `I`. This
 technique is illustrated
 [here](https://github.com/canmod/macpan2/tree/main/inst/starter_models/ww).
 
 ### Vital Dynamics
 
-In many cases birth-death dynamics happen slowly enough relative to
+In many cases birth and death happen at low enough rates relative to
 transmission dynamics that we can assume that the population size is
-constant, with no birth or death.
+constant, with no birth or death. For long-term modeling of endemic diseases,
+we may want to relax this assumption.
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                     |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The [sir_demog](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_demog) model includes birth and death. You can use this example to add vital dynamics to another model. Neither birth nor death can use `mp_per_capita_flow()`, but instead `mp_per_capita_inflow()` and `mp_per_capita_outflow()` (see [here](https://canmod.github.io/macpan2/reference/mp_per_capita_flow) for examples and details). |
+| The [sir_demog](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir_demog) model includes birth and death. You can use the machinery illustrated in this example to add vital dynamics to another model. Birth and death processes use `mp_per_capita_inflow()` and `mp_per_capita_outflow()` rather than `mp_per_capita_flow()` (see [here](https://canmod.github.io/macpan2/reference/mp_per_capita_flow) for examples and details). |
 
 ### Importation and Stochasticity
 
-In many cases large jurisdictions can be considered closed and
-deterministic systems without altering conclusions. Small populations
+Large jurisdictions can be assumed to be closed (no immigration or emigration - especially, no importation of disease),
+deterministic systems. Small populations
 however are more strongly impacted by stochasticity.
+<BMB>This is kind of a funny category. Do these belong together? I understand what your example is about, but you
+need to be clearer that you're talking about stochastic *importation* - otherwise I would have assumed that you
+were talking about process noise (which macpan2 can only handle in simulations, not in calibration)</BMB>
 
 | <img src="images/tip.svg" width="120" />                                                                                                                              |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -941,12 +955,10 @@ about a particular population and public health problem.
 
 ### Modify Default Values
 
-We have done this already, because it is so common that the default
+We have already shown how to modify default values - the default
 values provided in the [model
 library](https://canmod.github.io/macpan2/articles/example_models) will
-require adjustment for any particular purpose – especially for very
-generic models like
-[sir](https://github.com/canmod/macpan2/tree/main/inst/starter_models/sir).
+almost always need to be adjusted for use with a particular disease system.
 See the `sir_covid` model object that we produced above in [this
 section](#compare-simulated-and-observed-incidence).
 
@@ -955,7 +967,9 @@ section](#compare-simulated-and-observed-incidence).
 [The `default` argument](#modify-default-values) of the
 `mp_tmb_model_spec()` and `mp_tmb_update()` functions allows us to
 supply prior information on model parameter values, but gives us no
-opportunity to express uncertainty about these defaults. Later in the
+opportunity to express uncertainty about these defaults.
+<BMB>This is confusing/vague. By "prior information" you mean "values from the literature"?</BMB>
+Later in the
 [Optimized Calibration](#optimized-calibration) section we will see how
 to combine a model specification with [distributional
 specifications](https://canmod.github.io/macpan2/reference/distribution)
@@ -963,19 +977,20 @@ for the parameters that we would like to estimate through calibration.
 
 | <img src="images/tip.svg" width="120" />                                                                                                                                                                 |
 |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The distributional specifications are explained in the context of various use-cases in this [article](https://canmod.github.io/macpan2/articles/likelihood_prior_specs.html#priors-on-model-parameters). |
+| This [article](https://canmod.github.io/macpan2/articles/likelihood_prior_specs.html#priors-on-model-parameters) explains how priors can be specified in the context of various use-cases.   |
 
 ### Optimized Calibration
 
-We have covered a lot of gound above, but it has all paved the way
+<BMB>What is "optimized calibration"??</BMB>
+
+We have covered a lot of ground above, but it has all paved the way
 towards the topic of formally calibrating a model using data. Before
 getting to this point we needed to do the following.
 
--   [Find a model specification to start with](#starter-model-library).
--   [Be able to simulate from this model](#simulating-dynamics)
--   [Be able to modify this
-    model](#basics-of-modifying-model-specifications) so that we could
-    compare simulations with different kinds of observed data – for
+-   [Find a starting model specification](#starter-model-library).
+-   [Simulate from this model](#simulating-dynamics)
+-   [Modify the model](#basics-of-modifying-model-specifications) to work 
+    with different kinds of observed data – for
     example:
     -   [Case reports](#reporting-delays)
     -   [Hospitalization data](#hospital-admissions-and-occupancy)
@@ -986,12 +1001,12 @@ getting to this point we needed to do the following.
 -   [Express prior uncertainty about model
     parameters](#express-uncertainty-in-model-parameters)
 
-Now that we have this out of the way we can create a model
+Now we can create a model
 [calibrator](https://canmod.github.io/macpan2/reference/mp_tmb_calibrator)
-object that combines (1) a model specification, (2) a dataset that can
+object that combines (1) a model specification, (2) a data set that can
 be compared with simulations from this model, and (3) a list of
 distributional assumptions about model parameters that we would like to
-estimate. Such a calibrator can be used to fit these parameters to data,
+estimate <BMB>'distributional assumptions' is a little vague, may also be confused with 'distributional specifications' in the priors section above</BMB>. Such a calibrator can be used to fit these parameters to data,
 and then simulate and forecast observable variables using this
 calibrated model. These calibrators can also be used to generate
 confidence intervals for these simulations and forecasts using
