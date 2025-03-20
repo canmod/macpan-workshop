@@ -17,13 +17,13 @@ column. Let’s focus on those. We can use this SIR example.
 library(macpan2); library(tidyverse)
 ```
 
-    ## ── Attaching core tidyverse packages ────────────────────────────────────────────── tidyverse 2.0.0 ──
+    ## ── Attaching core tidyverse packages ─────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
     ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
     ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
     ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
     ## ✔ purrr     1.0.2     
-    ## ── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::all_equal() masks macpan2::all_equal()
     ## ✖ dplyr::filter()    masks stats::filter()
     ## ✖ dplyr::lag()       masks stats::lag()
@@ -183,7 +183,7 @@ simulated_sir = read_csv("https://raw.githubusercontent.com/canmod/macpan-worksh
 ```
 
     ## Rows: 100 Columns: 3
-    ## ── Column specification ──────────────────────────────────────────────────────────────────────────────
+    ## ── Column specification ───────────────────────────────────────────────────────
     ## Delimiter: ","
     ## chr (1): matrix
     ## dbl (2): time, value
@@ -212,7 +212,7 @@ early_on_covid_reports = read_csv("https://raw.githubusercontent.com/canmod/macp
 ```
 
     ## Rows: 147 Columns: 4
-    ## ── Column specification ──────────────────────────────────────────────────────────────────────────────
+    ## ── Column specification ───────────────────────────────────────────────────────
     ## Delimiter: ","
     ## chr  (2): province, var
     ## dbl  (1): value
@@ -268,21 +268,9 @@ Let’s keep it simple again and get more practice simulating and fitting.
 You can use this calibrated model to practice making forecasts and
 exploring scenarios.
 
-``` r
-exercise(
-    "Simulate 50 time steps of incidence (i.e., the infection flow) from the SIR model in the library with defaults. Create a calibrator but change the default values of `beta` and `gamma` so that the optimizer will need to do work to find the true values. Then calibrate your model to the simulation data using [mp_optimize](https://canmod.github.io/macpan2/reference/mp_optimize.html). After optimizing use [mp_forecaster](https://canmod.github.io/macpan2/reference/mp_forecaster) to extend 50 more time steps, so that the entire simulation would be 100 time steps. Use [mp_trajectory_sd](https://canmod.github.io/macpan2/reference/mp_trajectory.html) to produce forecasts with confidence intervals."
-)
-```
-
 | <img src="images/exercise.svg" width="120" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Simulate 50 time steps of incidence (i.e., the infection flow) from the SIR model in the library with defaults. Create a calibrator but change the default values of `beta` and `gamma` so that the optimizer will need to do work to find the true values. Then calibrate your model to the simulation data using [mp_optimize](https://canmod.github.io/macpan2/reference/mp_optimize.html). After optimizing use [mp_forecaster](https://canmod.github.io/macpan2/reference/mp_forecaster) to extend 50 more time steps, so that the entire simulation would be 100 time steps. Use [mp_trajectory_sd](https://canmod.github.io/macpan2/reference/mp_trajectory.html) to produce forecasts with confidence intervals. |
-
-``` r
-exercise(
-    "Create a scenario for beta, where transmission increases by a factor of 1.2 at time 60 (10 time steps after the data end). The answers for this exercise are [here](https://github.com/canmod/macpan-workshop/blob/main/code/simple-scenario.R)."
-)
-```
 
 | <img src="images/exercise.svg" width="120" />                                                                                                                                                                                                    |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
