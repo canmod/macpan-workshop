@@ -10,7 +10,7 @@ A [workshop](https://canmod.github.io/macpan-workshop/) on [macpan2](https://can
 * [Technical preparation](technical-preparation.md)
 * [Syllabus](syllabus.md)
 * [Video resources](video-resources.md)
-* [Package Documentation](https://github.com/canmod/macpan2)
+* [Package Documentation](https://canmod.github.io/macpan2/)
 * [Model library](https://github.com/canmod/macpan2/tree/main/inst/starter_models)
 * [Exploration Exercises](exploration-exercises.md)
   * [Code/Answers](https://github.com/canmod/macpan-workshop/tree/main/code)

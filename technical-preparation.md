@@ -81,6 +81,13 @@ repos = c('https://canmod.r-universe.dev', 'https://cloud.r-project.org')
 install.packages('macpan2', repos = repos)
 ```
 
+If this command fails, try:
+
+```r
+repos = c('https://canmod.r-universe.dev', 'https://cloud.r-project.org')
+install.packages('macpan2', repos = repos, type = "binary")
+```
+
 ## Verify that Everything Worked
 
 First, ensure that the packages load without errors. Run the following
